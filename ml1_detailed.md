@@ -1,5 +1,15 @@
 # Machine Learning 1
 
+## Table of Contents
+- [Lecture 2: Linear Regression](#lecture-2-linear-regression)
+- [Lecture 3: Logistic Regression](#lecture-3-logistic-regression)
+- [Lecture 4: Regularization](#lecture-4-regularization)
+- [Lecture 6: Artificial Neural Network](#lecture-6-artificial-neural-network)
+- [Lecture 4: Model Evaluation](#lecture-4-model-evaluation)
+- [Lab Practice 1: Linear Regression Implementation](#lab-practice-1-linear-regression-implementation)
+
+---
+
 ## Lecture 2: Linear Regression
 **Lecturer:** Dr. Le Huu Ton  
 **Date:** Hanoi, 09/2016
@@ -128,27 +138,20 @@ Given the data in Table 1, starting at $a=0$ and $b=0$ with learning rate $\alph
 2. Calculate the values of $a$ and $b$ after the first iteration.
 3. Confirm if the cost function is reduced.
 
-**Step-by-step Solution:**
-*Note: Data from Table 1: (30, 2.5), (43, 3.4), (25, 1.8), (51, 4.5), (40, 3.2), (20, 1.6). $m=6$.*
-
+**Solution:**
 **1. Initial Cost Function $E$ at $a=0, b=0$:**
+$m=6$. Data points $(x,y)$: $(30, 2.5), (43, 3.4), (25, 1.8), (51, 4.5), (40, 3.2), (20, 1.6)$
 $h(x) = 0x + 0 = 0$
-$E = \frac{1}{2m} \sum (0 - y^{(i)})^2 = \frac{1}{12} [2.5^2 + 3.4^2 + 1.8^2 + 4.5^2 + 3.2^2 + 1.6^2]$
-$E = \frac{1}{12} [6.25 + 11.56 + 3.24 + 20.25 + 10.24 + 2.56] = \frac{54.1}{12} \approx 4.508$
+$E = \frac{1}{12} [2.5^2 + 3.4^2 + 1.8^2 + 4.5^2 + 3.2^2 + 1.6^2] = \frac{54.1}{12} \approx 4.508$
 
 **2. First Iteration Updates:**
-$\frac{\partial E}{\partial a} = \frac{1}{6} \sum (0 - y^{(i)})x^{(i)} = \frac{1}{6} [(-2.5 \cdot 30) + (-3.4 \cdot 43) + (-1.8 \cdot 25) + (-4.5 \cdot 51) + (-3.2 \cdot 40) + (-1.6 \cdot 20)]$
-$\frac{\partial E}{\partial a} = \frac{1}{6} [-75 - 146.2 - 45 - 229.5 - 128 - 32] = \frac{-655.7}{6} \approx -109.283$
-
-$\frac{\partial E}{\partial b} = \frac{1}{6} \sum (0 - y^{(i)}) = \frac{1}{6} [-2.5 - 3.4 - 1.8 - 4.5 - 3.2 - 1.6] = \frac{-17}{6} \approx -2.833$
-
+$\frac{\partial E}{\partial a} = \frac{1}{6} \sum_{i=1}^6 (0 - y^{(i)})x^{(i)} = \frac{1}{6} [-75 - 146.2 - 45 - 229.5 - 128 - 32] = \frac{-655.7}{6} \approx -109.283$
+$\frac{\partial E}{\partial b} = \frac{1}{6} \sum_{i=1}^6 (0 - y^{(i)}) = \frac{1}{6} [-2.5 - 3.4 - 1.8 - 4.5 - 3.2 - 1.6] = \frac{-17}{6} \approx -2.833$
 New $a = 0 - (0.01 \cdot -109.283) = 1.09283$
 New $b = 0 - (0.01 \cdot -2.833) = 0.02833$
 
 **3. Confirm reduction:**
-Calculate new $E$ with $a=1.09283, b=0.02833$.
-$h(30) = 1.09283(30) + 0.02833 = 32.81$ (This is very far from 2.5, suggesting $\alpha=0.01$ might be too large for this feature scale without normalization).
-*Self-correction: Usually, for size in the tens, $\alpha$ should be much smaller (e.g., 0.0001).*
+New $E$ with $a=1.09283, b=0.02833$ is $\approx 679.7$. The cost increased significantly, so it did not reduce. This indicates the learning rate $\alpha=0.01$ is too high for this scale of features.
 
 ---
 
@@ -206,6 +209,14 @@ $$\theta = (X^T X)^{-1} X^T Y$$
 $x = [3, 2, 1]^T$, $y = [0, 1, 2]^T$
 Including $x_0 = 1$:
 $X = \begin{bmatrix} 1 & 3 \\ 1 & 2 \\ 1 & 1 \end{bmatrix}, Y = \begin{bmatrix} 0 \\ 1 \\ 2 \end{bmatrix}$
+
+**Solution:**
+1. $X^T X = \begin{bmatrix} 1 & 1 & 1 \\ 3 & 2 & 1 \end{bmatrix} \begin{bmatrix} 1 & 3 \\ 1 & 2 \\ 1 & 1 \end{bmatrix} = \begin{bmatrix} 3 & 6 \\ 6 & 14 \end{bmatrix}$.
+2. $\text{det}(X^T X) = 3(14) - 6(6) = 6$.
+3. $(X^T X)^{-1} = \frac{1}{6} \begin{bmatrix} 14 & -6 \\ -6 & 3 \end{bmatrix} = \begin{bmatrix} 7/3 & -1 \\ -1 & 1/2 \end{bmatrix}$.
+4. $X^T Y = \begin{bmatrix} 1 & 1 & 1 \\ 3 & 2 & 1 \end{bmatrix} \begin{bmatrix} 0 \\ 1 \\ 2 \end{bmatrix} = \begin{bmatrix} 3 \\ 4 \end{bmatrix}$.
+5. $\theta = \begin{bmatrix} 7/3 & -1 \\ -1 & 1/2 \end{bmatrix} \begin{bmatrix} 3 \\ 4 \end{bmatrix} = \begin{bmatrix} 3 \\ -1 \end{bmatrix}$.
+The hypothesis is $h(x) = 3 - x$.
 
 ---
 
@@ -332,6 +343,14 @@ $$\frac{\partial}{\partial \theta_j} E(\theta) = \frac{1}{m} \sum_{i=1}^{m} (h_\
 Starting with $\theta_0 = 0, \theta_1 = 0, \alpha = 0.001$:
 Calculate the values after the first iteration using the data in Section 1.1.
 
+**Solution:**
+Data: $x = [2.5, 3.5, 5.6, 2.2, 6.9, 9.6]$, $y = [0, 0, 1, 0, 1, 1]$. $m=6$.
+At $\theta=[0,0]^T$, $h(x) = g(0) = 0.5$ for all $x$.
+$\frac{\partial E}{\partial \theta_0} = \frac{1}{6} \sum (0.5 - y^{(i)}) = \frac{1}{6} [0.5+0.5-0.5+0.5-0.5-0.5] = 0$.
+$\frac{\partial E}{\partial \theta_1} = \frac{1}{6} \sum (0.5 - y^{(i)})x^{(i)} = \frac{1}{6} [1.25+1.75-2.8+1.1-3.45-4.8] = \frac{-6.95}{6} \approx -1.1583$.
+New $\theta_0 = 0 - 0.001(0) = 0$.
+New $\theta_1 = 0 - 0.001(-1.1583) = 0.0011583$.
+
 ---
 
 ### 6. Newton's Method
@@ -373,266 +392,24 @@ $$H = \frac{1}{m} \sum_{i=1}^{m} [h_\theta(x^{(i)})(1 - h_\theta(x^{(i)})) x^{(i
 Prices: 2.5, 3, 6, 2, 7, 10.
 Locations ($y$): 0, 0, 1, 0, 1, 1.
 
+**Solution:**
+Data: $x = [2.5, 3, 6, 2, 7, 10]$, $y = [0, 0, 1, 0, 1, 1]$. $m=6$.
+At $\theta=0$, $h=0.5$.
+1. Gradient $\nabla E$:
+$\frac{\partial E}{\partial \theta_0} = \frac{1}{6} \sum (0.5 - y^{(i)}) = 0$.
+$\frac{\partial E}{\partial \theta_1} = \frac{1}{6} \sum (0.5 - y^{(i)})x^{(i)} = \frac{1}{6} [1.25+1.5-3+1-3.5-5] = \frac{-7.75}{6} \approx -1.2917$.
+$\nabla E = \begin{bmatrix} 0 \\ -1.2917 \end{bmatrix}$.
+2. Hessian $H$:
+$H_{jk} = \frac{1}{6} \sum 0.5(1-0.5) x_j^{(i)} x_k^{(i)} = \frac{0.25}{6} \sum x^{(i)} (x^{(i)})^T$.
+$\sum 1 = 6$.
+$\sum x = 2.5+3+6+2+7+10 = 30.5$.
+$\sum x^2 = 6.25+9+36+4+49+100 = 204.25$.
+$H = \frac{0.25}{6} \begin{bmatrix} 6 & 30.5 \\ 30.5 & 204.25 \end{bmatrix} = \begin{bmatrix} 0.25 & 1.2708 \\ 1.2708 & 8.5104 \end{bmatrix}$.
+
 ---
 **References:**
 - [Stanford Machine Learning - Andrew Ng](http://openclassroom.stanford.edu/MainFolder/CoursePage.php?course=MachineLearning)
 - [Andrew Ng Slides on Generalized Linear Models](https://www.google.com.vn/url?sa=t&rct=j&q=&esrc=s&source=web&cd=2&cad=rja&uact=8&sqi=2&ved=0ahUKEwjNt4fdvMDPAhXIn5QKHZO1BSgQFggfMAE&url=https%3A%2F%2Fdatajobs.com%2Fdata-science-repo%2FGeneralized-Linear-Models-%5BAndrew-Ng%5D.pdf)
-
----
-
-## Lecture 4: Model Evaluation
-**Lecturer:** Dr. Le Huu Ton  
-**Date:** Hanoi, 2017
-
----
-
-### 1. Model Selection Ideas
-
-#### 1.1. Idea #1: Hyperparameter Tuning on All Data
-Choose hyperparameters that work best on the entire dataset. (Warning: This leads to over-optimistic results and poor generalization).
-
-#### 1.2. Idea #2: Train/Test Split
-Split data into **Train** and **Test** sets. Choose hyperparameters that work best on the test data.
-
-#### 1.3. Idea #3: Train/Validation/Test Split
-Split data into three sets:
-- **Training Dataset:** The sample of data used to fit the model.
-- **Validation Dataset:** The sample of data used to provide an unbiased evaluation of a model fit on the training dataset while tuning model hyperparameters. The evaluation becomes more biased as skill on the validation dataset is incorporated into the model configuration.
-- **Test Dataset:** The sample of data used to provide an unbiased evaluation of a final model fit on the training dataset.
-
-#### 1.4. Idea #4: Cross-Validation
-Split data into $k$ folds. Try each fold as validation and average the results.
-- Useful for small datasets.
-- Not used too frequently in Deep Learning due to computational cost.
-
----
-
-### 2. Evaluation of Regression Models
-
-#### 2.1. Mean Absolute Error (MAE)
-MAE is the sum of the absolute differences between predictions and actual values:
-$$MAE = \frac{1}{m} \sum_{i=1}^{m} |y^{(i)} - h(x^{(i)})|$$
-
-#### 2.2. Mean Squared Error (MSE)
-MSE measures the average of the squares of the errors—the difference between the real value and the predicted one:
-$$MSE = \frac{1}{m} \sum_{i=1}^{m} (y^{(i)} - h(x^{(i)}))^2$$
-
-#### 2.3. R Square ($R^2$)
-$R^2$ (Coefficient of Determination) provides an indication of the goodness of fit of a set of predictions to the actual values.
-
-- **Total Sum of Squares ($SS_{tot}$):** Proportional to the variance of the data.
-  $$SS_{tot} = \sum_{i=1}^{m} (y^{(i)} - \bar{y})^2$$
-  Where $\bar{y} = \frac{1}{m} \sum y^{(i)}$.
-- **Residual Sum of Squares ($SS_{res}$):**
-  $$SS_{res} = \sum_{i=1}^{m} (y^{(i)} - h(x^{(i)}))^2$$
-- **Formula:**
-  $$R^2 = 1 - \frac{SS_{res}}{SS_{tot}}$$
-
----
-
-### 3. Evaluation of Classification Models
-
-#### 3.1. Confusion Matrix
-A confusion matrix (or error matrix) is a specific table layout that allows visualization of the performance of an algorithm.
-
-**Example Matrix (Multiclass):**
-| Predicted \ Actual | Cat | Dog | Rabbit |
-| :--- | :--- | :--- | :--- |
-| **Cat** | 5 | 2 | 0 |
-| **Dog** | 3 | 3 | 2 |
-| **Rabbit** | 0 | 1 | 11 |
-
-**Binary Classification Layout:**
-| Known \ Predicted | Positive | Negative |
-| :--- | :--- | :--- |
-| **Positive** | True Positive (TP) | False Negative (FN) |
-| **Negative** | False Positive (FP) | True Negative (TN) |
-
-#### 3.2. Performance Metrics
-- **Precision:** The percentage of positive predictions that are correct.
-  $$\text{Precision} = \frac{TP}{TP + FP}$$
-- **Recall / Sensitivity:** The percentage of positive labeled instances that were predicted as positive.
-  $$\text{Recall} = \frac{TP}{TP + FN}$$
-- **Specificity:** The percentage of negative labeled instances that were predicted as negative.
-  $$\text{Specificity} = \frac{TN}{TN + FP}$$
-- **Accuracy:** The percentage of predictions that are correct.
-  $$\text{Accuracy} = \frac{TP + TN}{TP + TN + FP + FN}$$
-- **F-score (F1-score):** Harmonic mean of precision and recall.
-  $$F = 2 \cdot \frac{\text{Precision} \cdot \text{Recall}}{\text{Precision} + \text{Recall}}$$
-- **Root Mean Squared Error (RMSE):** Often used in regression but can be used in classification contexts (e.g., comparing predicted probabilities to binary outcomes).
-  $$RMSE = \sqrt{\frac{1}{m} \sum (y^{(i)} - h(x^{(i)}))^2}$$
-
----
-**References:**
-- [Stanford Machine Learning - Andrew Ng](http://openclassroom.stanford.edu/MainFolder/CoursePage.php?course=MachineLearning)
-- [Activation Functions (Wikipedia)](https://en.wikipedia.org/wiki/Activation_function)
-- [Step-by-step Backpropagation Example](https://mattmazur.com/2015/03/17/a-step-by-step-backpropagation-example/)
-
----
-
-## Lab Practice 1: Linear Regression Implementation
-
-### 1. Prerequisites
-- **Basic Python:** Recommended tutorial: [W3Schools Python Tutorial](https://www.w3schools.com/python/). Focus on basic syntax, variables, data types, loops, and functions.
-
-### 2. Linear Regression Implementation Task
-**Dataset:** Advertising dataset (Sales value for different products based on marketing spend on Television, Radio, and Newspaper).
-
-**Requirements:**
-- Implement the Linear Regression algorithm from scratch to predict sales value given the three inputs.
-- Calculate the cost function after each iteration.
-- Visualize the cost function as a function of the number of iterations to check for convergence.
-- Experiment with various values for the learning rate $\alpha$ and the number of iterations.
-
-### 3. Advanced Tasks
-- Solve the same advertising problem using the **Normal Equation** method.
-- Redo the implementation (Gradient Descent and Normal Equation) including **Regularization**.
-
----
-
-## Lecture 6: Artificial Neural Network
-**Lecturer:** Dr. Le Huu Ton  
-**Date:** Hanoi, 2017
-
----
-
-### 1. Biological Inspiration
-Artificial Neural Networks (ANNs) are loosely inspired by the structure of biological neurons in the brain.
-- **Dendrites:** Receives input signals.
-- **Cell Body (Nucleus):** Processes signals.
-- **Axon:** Transmits the output signal to other neurons via **Axon terminals**.
-
----
-
-### 2. The Perceptron
-A Perceptron mimics the operation of a biological neuron.
-
-#### 2.1. Mathematical Model
-- **Inputs:** $x_1, x_2, \dots, x_m$ (and a bias term 1).
-- **Weights:** $w_0, w_1, \dots, w_m$.
-- **Net Input Function:**
-  $$net = 1 \cdot w_0 + x_1 w_1 + x_2 w_2 + \dots + x_m w_m = w^T x$$
-- **Activation Function ($f$):** Applied to the net input to produce the output.
-  $$y = f(net)$$
-
-#### 2.2. Popular Activation Functions
-| Function | Formula | Range |
-| :--- | :--- | :--- |
-| **Identity** | $f(x) = x$ | $(-\infty, \infty)$ |
-| **Binary Step** | $f(x) = \begin{cases} 0 & x < 0 \\ 1 & x \ge 0 \end{cases}$ | $\{0, 1\}$ |
-| **Logistic (Sigmoid)** | $f(x) = \frac{1}{1 + e^{-x}}$ | $(0, 1)$ |
-| **TanH** | $f(x) = \tanh(x) = \frac{2}{1 + e^{-2x}} - 1$ | $(-1, 1)$ |
-| **ReLU (Rectified Linear Unit)** | $f(x) = \max(0, x)$ | $[0, \infty)$ |
-| **ArcTan** | $f(x) = \tan^{-1}(x)$ | $(-\pi/2, \pi/2)$ |
-| **Softsign** | $f(x) = \frac{x}{1 + |x|}$ | $(-1, 1)$ |
-
----
-
-### 3. Motivation for Neural Networks
-When the number of features is large, using high-order polynomial features in Logistic Regression becomes computationally expensive.
-- **Example:** 100 original features $\Rightarrow$ ~5,000 second-order features $\Rightarrow$ ~170,000 third-order features.
-- Neural Networks provide a better way to learn complex non-linear relationships.
-
----
-
-### 4. Neural Network Architecture
-Neurons are organized into layers:
-- **Layer 1 (Input Layer):** Receives the initial data.
-- **Hidden Layers:** Intermediate layers where features are transformed.
-- **Layer $L$ (Output Layer):** Produces the final prediction $h_\theta(x)$.
-
-**Notation:**
-- $a_i^{(j)}$: "Activation" of unit $i$ in layer $j$.
-- $W^{(j)}$: Matrix of weights controlling function mapping from layer $j$ to layer $j+1$.
-
----
-
-### 5. Forward Propagation
-Information flows from the input layer through the hidden layers to the output layer.
-
-**General Equations (Matrix Form):**
-- $a^{(1)} = x$ (including bias $x_0 = 1$).
-- $z^{(2)} = W^{(1)} a^{(1)}$
-- $a^{(2)} = g(z^{(2)})$
-- $z^{(3)} = W^{(2)} a^{(2)}$
-- $a^{(3)} = g(z^{(3)}) = h(x)$
-
-**Example for 3-layer network (Layer 2 is hidden):**
-$$a_1^{(2)} = g(W_{10}^{(1)}x_0 + W_{11}^{(1)}x_1 + W_{12}^{(1)}x_2 + W_{13}^{(1)}x_3)$$
-$$a_2^{(2)} = g(W_{20}^{(1)}x_0 + W_{21}^{(1)}x_1 + W_{22}^{(1)}x_2 + W_{23}^{(1)}x_3)$$
-$$h(x) = a^{(3)} = g(W_{10}^{(2)}a_0^{(2)} + W_{11}^{(2)}a_1^{(2)} + W_{12}^{(2)}a_2^{(2)} + W_{13}^{(2)}a_3^{(2)})$$
-
----
-
-### 6. Training Neural Networks
-
-#### 6.1. Cost Function
-For regression-like output (MSE):
-$$E(W) = \frac{1}{2m} \sum_{i=1}^{m} (y^{(i)} - h(x^{(i)}))^2$$
-
-#### 6.2. Gradient Descent
-Update each weight $w$ to minimize $E$:
-$$w := w - \alpha \frac{\partial E}{\partial w}$$
-
----
-
-### 7. Backpropagation Algorithm
-Backpropagation is used to calculate the gradients $\frac{\partial E}{\partial w}$ efficiently layer by layer, starting from the last layer.
-
-#### 7.1. Chain Rule Derivation
-For a weight $w$ in the network:
-$$\frac{\partial E}{\partial w} = \frac{\partial E}{\partial a} \cdot \frac{\partial a}{\partial net} \cdot \frac{\partial net}{\partial w}$$
-
-#### 7.2. Step-by-Step Backprop (Example Updates)
-To update an output weight $w_5$ (connected to output $o_1$):
-$$\frac{\partial E_{total}}{\partial w_5} = \frac{\partial E_{total}}{\partial out_{o1}} \cdot \frac{\partial out_{o1}}{\partial net_{o1}} \cdot \frac{\partial net_{o1}}{\partial w_5}$$
-Where:
-- $E_{total} = E_{o1} + E_{o2}$
-- $E_{o1} = \frac{1}{2}(\text{target}_{o1} - out_{o1})^2$
-
-To update a hidden weight $w_1$ (connected to hidden unit $h_1$):
-$$\frac{\partial E_{total}}{\partial w_1} = \frac{\partial E_{total}}{\partial out_{h1}} \cdot \frac{\partial out_{h1}}{\partial net_{h1}} \cdot \frac{\partial net_{h1}}{\partial w_1}$$
-Since $h_1$ affects both outputs $o_1$ and $o_2$:
-$$\frac{\partial E_{total}}{\partial out_{h1}} = \frac{\partial E_{o1}}{\partial out_{h1}} + \frac{\partial E_{o2}}{\partial out_{h1}}$$
-
----
-
-### 8. Exercises
-
-#### 8.1. Manual Forward Pass
-**Problem:** Calculate the output of a network with $x_1=1, x_2=0$ and weights:
-$w_{13}=2, w_{23}=-3, w_{35}=2$
-$w_{14}=1, w_{24}=4, w_{45}=-1$
-Using binary step activation: $f(v) = 1$ if $v \ge 0$, else 0.
-
-#### 8.2. Backpropagation Calculation
-**Problem:** Given initial weights and training data (as shown in slide 21), perform one step of backpropagation to update the weights.
-
----
-**References:**
-- [Stanford Machine Learning - Andrew Ng](http://openclassroom.stanford.edu/MainFolder/CoursePage.php?course=MachineLearning)
-- [Activation Functions (Wikipedia)](https://en.wikipedia.org/wiki/Activation_function)
-- [Step-by-step Backpropagation Example](https://mattmazur.com/2015/03/17/a-step-by-step-backpropagation-example/)
-
----
-
-## Lab Practice 1: Linear Regression Implementation
-
-### 1. Prerequisites
-- **Basic Python:** Recommended tutorial: [W3Schools Python Tutorial](https://www.w3schools.com/python/). Focus on basic syntax, variables, data types, loops, and functions.
-
-### 2. Linear Regression Implementation Task
-**Dataset:** Advertising dataset (Sales value for different products based on marketing spend on Television, Radio, and Newspaper).
-
-**Requirements:**
-- Implement the Linear Regression algorithm from scratch to predict sales value given the three inputs.
-- Calculate the cost function after each iteration.
-- Visualize the cost function as a function of the number of iterations to check for convergence.
-- Experiment with various values for the learning rate $\alpha$ and the number of iterations.
-
-### 3. Advanced Tasks
-- Solve the same advertising problem using the **Normal Equation** method.
-- Redo the implementation (Gradient Descent and Normal Equation) including **Regularization**.
 
 ---
 
@@ -728,7 +505,7 @@ Where $L$ is the same matrix as in Section 3.2.
 
 #### 5.1. Regularization Effect
 **Question:** What if $\lambda$ is set to an extremely large number?
-**Answer:** The algorithm results in underfitting (Statement 3).
+**Answer:** The algorithm results in underfitting. Small parameters $\theta_j$ ($j \ge 1$) will be penalized heavily, forcing them toward zero and making the model too simple.
 
 #### 5.2. Iteration Calculation
 **Problem:** Given data:
@@ -738,6 +515,18 @@ Where $L$ is the same matrix as in Section 3.2.
 At one iteration: $\theta_0=1, \theta_1=2, \theta_2=1, \alpha=6, \lambda=10, m=6$.
 Calculate the values of $\theta$ after this iteration using the regularized update rule.
 
+**Solution:**
+1. Predictions $h(x) = 1 + 2x_1 + x_2$:
+$h = [64, 85, 43, 105, 84, 42]$.
+2. Errors $h-y$:
+$h-y = [62, 82, 41, 100, 81, 40]$.
+3. Sum of errors: $\sum (h-y) = 406$.
+4. $\theta_0$ update: $\theta_0 := 1 - 6(406/6) = 1 - 406 = -405$.
+5. $\theta_1$ update: $\theta_1 := 2(1 - 60/6) - (6/6) \sum (h-y)x_1 = 2(-9) - 15000 = -18 - 15000 = -15018$.
+($\sum (h-y)x_1 = 62(30)+82(40)+41(20)+100(50)+81(40)+40(20) = 1860+3280+820+5000+3240+800 = 15000$)
+6. $\theta_2$ update: $\theta_2 := 1(1 - 60/6) - (6/6) \sum (h-y)x_2 = -9 - 1279 = -1288$.
+($\sum (h-y)x_2 = 62(3)+82(4)+41(2)+100(4)+81(3)+40(1) = 186+328+82+400+243+40 = 1279$)
+
 #### 5.3. Newton's Method Exercise
 **Problem:** Starting with $\theta_0 = 0, \theta_1 = 0, \alpha = 0.01, \lambda = 10$.
 1. Calculate the value of coefficients after the first iteration using gradient descent.
@@ -745,120 +534,18 @@ Calculate the values of $\theta$ after this iteration using the regularized upda
    Prices: 2.5, 3.5, 5.6, 2.2, 6.9, 9.6
    $y$: 0, 0, 1, 0, 1, 1
 
+**Solution:**
+1. Gradient Descent:
+$\frac{\partial E}{\partial \theta_1} = -1.1583 + (10/6)(0) = -1.1583$.
+$\theta_1 := 0 - 0.01(-1.1583) = 0.011583$. $\theta_0 = 0$.
+2. Newton's Method:
+$\nabla E = \begin{bmatrix} 0 \\ -1.1583 \end{bmatrix}$.
+$H = \frac{0.25}{6} \begin{bmatrix} 6 & 30.3 \\ 30.3 & 201.27 \end{bmatrix} + \frac{10}{6} \begin{bmatrix} 0 & 0 \\ 0 & 1 \end{bmatrix} = \begin{bmatrix} 0.25 & 1.2625 \\ 1.2625 & 10.053 \end{bmatrix}$.
+
 ---
 **References:**
 - [Stanford Machine Learning - Andrew Ng](http://openclassroom.stanford.edu/MainFolder/CoursePage.php?course=MachineLearning)
 - [Andrew Ng Slides on Generalized Linear Models](https://www.google.com.vn/url?sa=t&rct=j&q=&esrc=s&source=web&cd=2&cad=rja&uact=8&sqi=2&ved=0ahUKEwjNt4fdvMDPAhXIn5QKHZO1BSgQFggfMAE&url=https%3A%2F%2Fdatajobs.com%2Fdata-science-repo%2FGeneralized-Linear-Models-%5BAndrew-Ng%5D.pdf)
-
----
-
-## Lecture 4: Model Evaluation
-**Lecturer:** Dr. Le Huu Ton  
-**Date:** Hanoi, 2017
-
----
-
-### 1. Model Selection Ideas
-
-#### 1.1. Idea #1: Hyperparameter Tuning on All Data
-Choose hyperparameters that work best on the entire dataset. (Warning: This leads to over-optimistic results and poor generalization).
-
-#### 1.2. Idea #2: Train/Test Split
-Split data into **Train** and **Test** sets. Choose hyperparameters that work best on the test data.
-
-#### 1.3. Idea #3: Train/Validation/Test Split
-Split data into three sets:
-- **Training Dataset:** The sample of data used to fit the model.
-- **Validation Dataset:** The sample of data used to provide an unbiased evaluation of a model fit on the training dataset while tuning model hyperparameters. The evaluation becomes more biased as skill on the validation dataset is incorporated into the model configuration.
-- **Test Dataset:** The sample of data used to provide an unbiased evaluation of a final model fit on the training dataset.
-
-#### 1.4. Idea #4: Cross-Validation
-Split data into $k$ folds. Try each fold as validation and average the results.
-- Useful for small datasets.
-- Not used too frequently in Deep Learning due to computational cost.
-
----
-
-### 2. Evaluation of Regression Models
-
-#### 2.1. Mean Absolute Error (MAE)
-MAE is the sum of the absolute differences between predictions and actual values:
-$$MAE = \frac{1}{m} \sum_{i=1}^{m} |y^{(i)} - h(x^{(i)})|$$
-
-#### 2.2. Mean Squared Error (MSE)
-MSE measures the average of the squares of the errors—the difference between the real value and the predicted one:
-$$MSE = \frac{1}{m} \sum_{i=1}^{m} (y^{(i)} - h(x^{(i)}))^2$$
-
-#### 2.3. R Square ($R^2$)
-$R^2$ (Coefficient of Determination) provides an indication of the goodness of fit of a set of predictions to the actual values.
-
-- **Total Sum of Squares ($SS_{tot}$):** Proportional to the variance of the data.
-  $$SS_{tot} = \sum_{i=1}^{m} (y^{(i)} - \bar{y})^2$$
-  Where $\bar{y} = \frac{1}{m} \sum y^{(i)}$.
-- **Residual Sum of Squares ($SS_{res}$):**
-  $$SS_{res} = \sum_{i=1}^{m} (y^{(i)} - h(x^{(i)}))^2$$
-- **Formula:**
-  $$R^2 = 1 - \frac{SS_{res}}{SS_{tot}}$$
-
----
-
-### 3. Evaluation of Classification Models
-
-#### 3.1. Confusion Matrix
-A confusion matrix (or error matrix) is a specific table layout that allows visualization of the performance of an algorithm.
-
-**Example Matrix (Multiclass):**
-| Predicted \ Actual | Cat | Dog | Rabbit |
-| :--- | :--- | :--- | :--- |
-| **Cat** | 5 | 2 | 0 |
-| **Dog** | 3 | 3 | 2 |
-| **Rabbit** | 0 | 1 | 11 |
-
-**Binary Classification Layout:**
-| Known \ Predicted | Positive | Negative |
-| :--- | :--- | :--- |
-| **Positive** | True Positive (TP) | False Negative (FN) |
-| **Negative** | False Positive (FP) | True Negative (TN) |
-
-#### 3.2. Performance Metrics
-- **Precision:** The percentage of positive predictions that are correct.
-  $$\text{Precision} = \frac{TP}{TP + FP}$$
-- **Recall / Sensitivity:** The percentage of positive labeled instances that were predicted as positive.
-  $$\text{Recall} = \frac{TP}{TP + FN}$$
-- **Specificity:** The percentage of negative labeled instances that were predicted as negative.
-  $$\text{Specificity} = \frac{TN}{TN + FP}$$
-- **Accuracy:** The percentage of predictions that are correct.
-  $$\text{Accuracy} = \frac{TP + TN}{TP + TN + FP + FN}$$
-- **F-score (F1-score):** Harmonic mean of precision and recall.
-  $$F = 2 \cdot \frac{\text{Precision} \cdot \text{Recall}}{\text{Precision} + \text{Recall}}$$
-- **Root Mean Squared Error (RMSE):** Often used in regression but can be used in classification contexts (e.g., comparing predicted probabilities to binary outcomes).
-  $$RMSE = \sqrt{\frac{1}{m} \sum (y^{(i)} - h(x^{(i)}))^2}$$
-
----
-**References:**
-- [Stanford Machine Learning - Andrew Ng](http://openclassroom.stanford.edu/MainFolder/CoursePage.php?course=MachineLearning)
-- [Activation Functions (Wikipedia)](https://en.wikipedia.org/wiki/Activation_function)
-- [Step-by-step Backpropagation Example](https://mattmazur.com/2015/03/17/a-step-by-step-backpropagation-example/)
-
----
-
-## Lab Practice 1: Linear Regression Implementation
-
-### 1. Prerequisites
-- **Basic Python:** Recommended tutorial: [W3Schools Python Tutorial](https://www.w3schools.com/python/). Focus on basic syntax, variables, data types, loops, and functions.
-
-### 2. Linear Regression Implementation Task
-**Dataset:** Advertising dataset (Sales value for different products based on marketing spend on Television, Radio, and Newspaper).
-
-**Requirements:**
-- Implement the Linear Regression algorithm from scratch to predict sales value given the three inputs.
-- Calculate the cost function after each iteration.
-- Visualize the cost function as a function of the number of iterations to check for convergence.
-- Experiment with various values for the learning rate $\alpha$ and the number of iterations.
-
-### 3. Advanced Tasks
-- Solve the same advertising problem using the **Normal Equation** method.
-- Redo the implementation (Gradient Descent and Normal Equation) including **Regularization**.
 
 ---
 
@@ -977,8 +664,112 @@ $w_{13}=2, w_{23}=-3, w_{35}=2$
 $w_{14}=1, w_{24}=4, w_{45}=-1$
 Using binary step activation: $f(v) = 1$ if $v \ge 0$, else 0.
 
+**Solution:**
+Input: $x=[1, 0]$.
+$net_3 = 1(2) + 0(-3) = 2 \to a_3 = 1$.
+$net_4 = 1(1) + 0(4) = 1 \to a_4 = 1$.
+$net_5 = a_3(2) + a_4(-1) = 2 - 1 = 1 \to a_5 = 1$.
+Output is **1**.
+
 #### 8.2. Backpropagation Calculation
 **Problem:** Given initial weights and training data (as shown in slide 21), perform one step of backpropagation to update the weights.
+
+**Solution:**
+1. Forward pass to get all $a^{(l)}$.
+2. $\delta_j^{(L)} = (a_j^{(L)} - y_j) a_j^{(L)}(1 - a_j^{(L)})$.
+3. $\delta_i^{(L-1)} = (\sum W_{ij} \delta_j^{(L)}) a_i^{(L-1)}(1 - a_i^{(L-1)})$.
+4. $\frac{\partial E}{\partial W_{ij}} = a_i \delta_j$.
+5. $W := W - \alpha \frac{\partial E}{\partial W}$.
+
+---
+**References:**
+- [Stanford Machine Learning - Andrew Ng](http://openclassroom.stanford.edu/MainFolder/CoursePage.php?course=MachineLearning)
+- [Activation Functions (Wikipedia)](https://en.wikipedia.org/wiki/Activation_function)
+- [Step-by-step Backpropagation Example](https://mattmazur.com/2015/03/17/a-step-by-step-backpropagation-example/)
+
+---
+
+## Lecture 4: Model Evaluation
+**Lecturer:** Dr. Le Huu Ton  
+**Date:** Hanoi, 2017
+
+---
+
+### 1. Model Selection Ideas
+
+#### 1.1. Idea #1: Hyperparameter Tuning on All Data
+Choose hyperparameters that work best on the entire dataset. (Warning: This leads to over-optimistic results and poor generalization).
+
+#### 1.2. Idea #2: Train/Test Split
+Split data into **Train** and **Test** sets. Choose hyperparameters that work best on the test data.
+
+#### 1.3. Idea #3: Train/Validation/Test Split
+Split data into three sets:
+- **Training Dataset:** The sample of data used to fit the model.
+- **Validation Dataset:** The sample of data used to provide an unbiased evaluation of a model fit on the training dataset while tuning model hyperparameters. The evaluation becomes more biased as skill on the validation dataset is incorporated into the model configuration.
+- **Test Dataset:** The sample of data used to provide an unbiased evaluation of a final model fit on the training dataset.
+
+#### 1.4. Idea #4: Cross-Validation
+Split data into $k$ folds. Try each fold as validation and average the results.
+- Useful for small datasets.
+- Not used too frequently in Deep Learning due to computational cost.
+
+---
+
+### 2. Evaluation of Regression Models
+
+#### 2.1. Mean Absolute Error (MAE)
+MAE is the sum of the absolute differences between predictions and actual values:
+$$MAE = \frac{1}{m} \sum_{i=1}^{m} |y^{(i)} - h(x^{(i)})|$$
+
+#### 2.2. Mean Squared Error (MSE)
+MSE measures the average of the squares of the errors—the difference between the real value and the predicted one:
+$$MSE = \frac{1}{m} \sum_{i=1}^{m} (y^{(i)} - h(x^{(i)}))^2$$
+
+#### 2.3. R Square ($R^2$)
+$R^2$ (Coefficient of Determination) provides an indication of the goodness of fit of a set of predictions to the actual values.
+
+- **Total Sum of Squares ($SS_{tot}$):** Proportional to the variance of the data.
+  $$SS_{tot} = \sum_{i=1}^{m} (y^{(i)} - \bar{y})^2$$
+  Where $\bar{y} = \frac{1}{m} \sum y^{(i)}$.
+- **Residual Sum of Squares ($SS_{res}$):**
+  $$SS_{res} = \sum_{i=1}^{m} (y^{(i)} - h(x^{(i)}))^2$$
+- **Formula:**
+  $$R^2 = 1 - \frac{SS_{res}}{SS_{tot}}$$
+
+---
+
+### 3. Evaluation of Classification Models
+
+#### 3.1. Confusion Matrix
+A confusion matrix (or error matrix) is a specific table layout that allows visualization of the performance of an algorithm.
+
+**Example Matrix (Multiclass):**
+| Predicted \ Actual | Cat | Dog | Rabbit |
+| :--- | :--- | :--- | :--- |
+| **Cat** | 5 | 2 | 0 |
+| **Dog** | 3 | 3 | 2 |
+| **Rabbit** | 0 | 1 | 11 |
+
+**Binary Classification Layout:**
+| Known \ Predicted | Positive | Negative |
+| :--- | :--- | :--- |
+| **Positive** | True Positive (TP) | False Negative (FN) |
+| **Negative** | False Positive (FP) | True Negative (TN) |
+
+#### 3.2. Performance Metrics
+- **Precision:** The percentage of positive predictions that are correct.
+  $$\text{Precision} = \frac{TP}{TP + FP}$$
+- **Recall / Sensitivity:** The percentage of positive labeled instances that were predicted as positive.
+  $$\text{Recall} = \frac{TP}{TP + FN}$$
+- **Specificity:** The percentage of negative labeled instances that were predicted as negative.
+  $$\text{Specificity} = \frac{TN}{TN + FP}$$
+- **Accuracy:** The percentage of predictions that are correct.
+  $$\text{Accuracy} = \frac{TP + TN}{TP + TN + FP + FN}$$
+- **F-score (F1-score):** Harmonic mean of precision and recall.
+  $$F = 2 \cdot \frac{\text{Precision} \cdot \text{Recall}}{\text{Precision} + \text{Recall}}$$
+- **Root Mean Squared Error (RMSE):** Often used in regression but can be used in classification contexts (e.g., comparing predicted probabilities to binary outcomes).
+  $$RMSE = \sqrt{\frac{1}{m} \sum (y^{(i)} - h(x^{(i)}))^2}$$
 
 ---
 **References:**
